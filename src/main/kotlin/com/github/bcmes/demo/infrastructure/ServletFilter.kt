@@ -1,10 +1,16 @@
 package com.github.bcmes.demo.infrastructure
 
 import org.springframework.context.annotation.Configuration
+import org.springframework.util.AntPathMatcher
+import org.springframework.web.util.ContentCachingRequestWrapper
 import javax.servlet.*
+import javax.servlet.http.HttpServletRequest
 
 @Configuration
-class ServletFilter() : Filter {
+class ServletFilter(
+    private val routes: List<String> = listOf("/v1/people", "/v1/people/{id}"),
+    private val matcher: AntPathMatcher = AntPathMatcher()
+) : Filter {
 
     override fun init(filterConfig: FilterConfig?) {
         super.init(filterConfig)
@@ -22,6 +28,12 @@ class ServletFilter() : Filter {
                 " e a resposta para a proxima entidade na cadeia, atraves do chain?.doFilter(req, res).")
         println("====> doFilter(ServletRequest?, ServletResponse?, FilterChain?) <====")
 
+        //Analise 1:
+        //Verifica se a rota chamada e uma das listadas acima
+        val request = req as HttpServletRequest
+        val bool = routes.any { route -> matcher.match(route, request.requestURI) }
+        println("===>$bool<===")
+        //Passa a request/response para a proxima entidade na cadeia
         chain?.doFilter(req, res)
     }
 
