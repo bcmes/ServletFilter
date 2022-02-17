@@ -43,9 +43,15 @@ class ServletFilter(
         //O erro disparado e java.lang.IllegalStateException
         //No exemplo abaixo eu leio o conteudo e passo a requisicao para frente, quando ela for ser lida para inflar o
         //objeto do controller, ela dara erro, pois ja foi lida.
-        val x = req?.reader?.lines()?.collect(Collectors.joining(System.lineSeparator()))
-        println(x)
-        chain?.doFilter(req, res)
+        //val x = req?.reader?.lines()?.collect(Collectors.joining(System.lineSeparator()))
+        //println(x)
+        //chain?.doFilter(req, res)
+
+        //Analise 3: Cacheando a requisicao
+        //Cria um cache para a HttpServletRequest fornecida, assim posso ler a request N vezes.
+        // O cache e gerado quando o conteudo do  ServletRequest for lido. Se nao for lido nao tem cache.
+        // Normalmente e lido um pouco antes do controller, para dar os valores ao controller, nesse momento o cache e gerado.
+        chain?.doFilter(ContentCachingRequestWrapper(req as HttpServletRequest), res)
     }
 
     override fun destroy() {
