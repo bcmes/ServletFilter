@@ -18,3 +18,11 @@ Obs.: Eu posso receber a instancia do HttpServletRequest da solicitacao em difer
 httpServletRequest.setAttribute("key", Value)
 .... 
 httpServletRequest.getAttribute("key")
+
+Outras exemplos poderiam ser:
+
+Ex01.: Obtendo o valor de uma QueryString
+
+../produtos?nome=bruno
+
+httpServletRequest.getParameter("nome");
